@@ -1,5 +1,16 @@
 PFH_DB_NPC_NAMES = {
+    [11982] = "Magmadar",
+    [11988] = "Golemagg the Incinerator",
+    [12017] = "Broodlord Lashlayer",
+    [12098] = "Sulfuron Harbinger",
+    [12435] = "Razorgore the Untamed",
+    [14020] = "Chromaggus",
     [15263] = "The Prophet Skeram",
+    [15276] = "Emperor Vek'lor",
+    [15299] = "Viscidus",
+    [15932] = "Gluth",
+    [15952] = "Maexxna",
+    [16011] = "Loatheb",
     [17808] = "Anetheron",
     [17842] = "Azgalor",
     [17968] = "Archimonde",
@@ -14,6 +25,116 @@ PFH_DB_NPC_NAMES = {
 }
 
 PFH_DB_PETS = {
+    [93029] = { -- Gluth's Bone
+        npc_id = 68654,
+        from = {
+            {
+                type = 'raid', npc_id = 15932,
+                zone_id = 535,
+                level = 80, for_sort = 200,
+            },
+        },
+    },
+    [93030] = { -- Dusty Clutch of Eggs
+        npc_id = 68656,
+        from = {
+            {
+                type = 'raid', npc_id = 15952,
+                zone_id = 535,
+                level = 80, for_sort = 200,
+            },
+        },
+    },
+    [93032] = { -- Blighted Spore
+        npc_id = 68657,
+        from = {
+            {
+                type = 'raid', npc_id = 16011,
+                zone_id = 535,
+                level = 80, for_sort = 200,
+            },
+        },
+    },
+    [93033] = { -- Mark of Flame
+        npc_id = 68665,
+        from = {
+            {
+                type = 'raid', npc_id = 12098,
+                zone_id = 696,
+                level = 60, for_sort = 66,
+            },
+        },
+    },
+    [93034] = { -- Blazing Rune
+        npc_id = 68664,
+        from = {
+            {
+                type = 'raid', npc_id = 11982,
+                zone_id = 696,
+                level = 60, for_sort = 71,
+            },
+        },
+    },
+    [93035] = { -- Core of Hardened Ash
+        npc_id = 68666,
+        from = {
+            {
+                type = 'raid', npc_id = 11988,
+                zone_id = 696,
+                level = 60, for_sort = 71,
+            },
+        },
+    },
+    [93036] = { -- Unscathed Egg
+        npc_id = 68661,
+        from = {
+            {
+                type = 'raid', npc_id = 12435,
+                zone_id = 755,
+                level = 60, for_sort = 76,
+            },
+        },
+    },
+    [93037] = { -- Blackwing Banner
+        npc_id = 68663,
+        from = {
+            {
+                type = 'raid', npc_id = 12017,
+                zone_id = 755,
+                level = 60, for_sort = 76,
+            },
+        },
+    },
+    [93038] = { -- Whistle of Chromatic Bone
+        npc_id = 68662,
+        from = {
+            {
+                type = 'raid', npc_id = 14020,
+                zone_id = 755,
+                level = 60, for_sort = 77,
+            },
+        },
+    },
+    [93039] = { -- Viscidus Globule
+        npc_id = 68660,
+        from = {
+            {
+                type = 'raid', npc_id = 15299,
+                zone_id = 766,
+                level = 60, for_sort = 78,
+            },
+        },
+    },
+    [93040] = { -- Anubisath Idol
+        npc_id = 68659,
+        from = {
+            {
+                type = 'raid', npc_id = 15276,
+                zone_id = 766,
+                level = 60, for_sort = 81,
+            },
+        },
+    },
     [93041] = { -- Jewel of Maddening Whispers
         npc_id = 68658,
         from = {

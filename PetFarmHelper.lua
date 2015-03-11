@@ -23,7 +23,9 @@ function addon:OnInitialize()
             hide_raid = false,
             hide_world = false,
             hide_quest = false,
+
             hide_collected = true,
+
             minimap = {
                 hide = false,
             },

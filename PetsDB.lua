@@ -8,12 +8,22 @@ PFH_DB_NPC_NAMES = {
     [15263] = "The Prophet Skeram",
     [15276] = "Emperor Vek'lor",
     [15299] = "Viscidus",
+    [15688] = "Terestian Illhoof",
+    [15690] = "Prince Malchezaar",
+    [15691] = "The Curator",
     [15932] = "Gluth",
     [15952] = "Maexxna",
     [16011] = "Loatheb",
+    [17521] = "The Big Bad Wolf",
     [17808] = "Anetheron",
     [17842] = "Azgalor",
     [17968] = "Archimonde",
+    [18805] = "High Astromancer Solarian",
+    [19514] = "Al'ar",
+    [19516] = "Void Reaver",
+    [21212] = "Lady Vashj",
+    [21213] = "Morogrim Tidewalker",
+    [21216] = "Hydross the Unstable",
     [22887] = "High Warlord Naj'entus",
     [22898] = "Supremus",
     [22947] = "Mother Shahraz",
@@ -142,6 +152,106 @@ PFH_DB_PETS = {
                 type = 'raid', npc_id = 15263,
                 zone_id = 766,
                 level = 60, for_sort = 75,
+            },
+        },
+    },
+    [97548] = { -- Spiky Collar
+        npc_id = 71014,
+        from = {
+            {
+                type = 'raid', npc_id = 17521,
+                zone_id = 799,
+                level = 70, for_sort = 115,
+            },
+        },
+    },
+    [97549] = { -- Instant Arcane Sanctum Security Kit
+        npc_id = 71015,
+        from = {
+            {
+                type = 'raid', npc_id = 15691,
+                zone_id = 799,
+                level = 70, for_sort = 115,
+            },
+        },
+    },
+    [97550] = { -- Netherspace Portal-Stone
+        npc_id = 71016,
+        from = {
+            {
+                type = 'raid', npc_id = 15690,
+                zone_id = 799,
+                level = 70, for_sort = 125,
+            },
+        },
+    },
+    [97551] = { -- Satyr Charm
+        npc_id = 71033,
+        from = {
+            {
+                type = 'raid', npc_id = 15688,
+                zone_id = 799,
+                level = 70, for_sort = 115,
+            },
+        },
+    },
+    [97552] = { -- Shell of Tide-Calling
+        npc_id = 71017,
+        from = {
+            {
+                type = 'raid', npc_id = 21213,
+                zone_id = 780,
+                level = 70, for_sort = 134,
+            },
+        },
+    },
+    [97553] = { -- Tainted Core
+        npc_id = 71018,
+        from = {
+            {
+                type = 'raid', npc_id = 21216,
+                zone_id = 780,
+                level = 70, for_sort = 128,
+            },
+        },
+    },
+    [97554] = { -- Dripping Strider Egg
+        npc_id = 71019,
+        from = {
+            {
+                type = 'raid', npc_id = 21212,
+                zone_id = 780,
+                level = 70, for_sort = 141,
+            },
+        },
+    },
+    [97555] = { -- Tiny Fel Engine Key
+        npc_id = 71020,
+        from = {
+            {
+                type = 'raid', npc_id = 19516,
+                zone_id = 782,
+                level = 70, for_sort = 128,
+            },
+        },
+    },
+    [97556] = { -- Crystal of the Void
+        npc_id = 71021,
+        from = {
+            {
+                type = 'raid', npc_id = 18805,
+                zone_id = 782,
+                level = 70, for_sort = 134,
+            },
+        },
+    },
+    [97557] = { -- Brilliant Phoenix Hawk Feather
+        npc_id = 71022,
+        from = {
+            {
+                type = 'raid', npc_id = 19514,
+                zone_id = 782,
+                level = 70, for_sort = 134,
             },
         },
     },

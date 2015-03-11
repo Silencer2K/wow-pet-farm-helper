@@ -1,0 +1,23 @@
+## Interface: 60100
+## Title: Pet Farm Helper
+## Author: silencer2k@gmail.com
+## SavedVariables: PetFarmHelperDB
+## Version: 0.1
+
+MountFarmHelper.xml
+
+locales\enUS.lua
+locales\ruRU.lua
+
+locales\deDE.lua
+locales\esES.lua
+locales\esMX.lua
+locales\frFR.lua
+locales\itIT.lua
+locales\koKR.lua
+locales\ptBR.lua
+locales\zhCN.lua
+locales\zhTW.lua
+
+PetsDB.lua
+PetFarmHelper.lua

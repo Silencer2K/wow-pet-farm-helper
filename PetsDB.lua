@@ -162,6 +162,7 @@ PFH_DB_PETS = {
                 type = 'raid', npc_id = 17521,
                 zone_id = 799,
                 level = 70, for_sort = 115,
+                raid_save = 'Opera Event',
             },
         },
     },

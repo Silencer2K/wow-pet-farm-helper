@@ -12,6 +12,10 @@ local TOOLTIP_SEPARATOR = { 1, 1, 1, 1, 0.5 }
 local COLOR_DUNGEON = { 1, 1, 0, 1 }
 local COLOR_COMMENT = { 0, 1, 0, 1 }
 
+local COLOR_COUNT_NONE   = { 1, 0, 0, 1 }
+local COLOR_COUNT_MAX    = { 0, 1, 0, 1 }
+local COLOR_COUNT_NORMAL = { 1, 1, 0, 1 }
+
 local COLOR_MODE_TEXT = 'ff00ff00'
 
 local PET_JOURNAL_FLAGS = { LE_PET_JOURNAL_FLAG_COLLECTED, LE_PET_JOURNAL_FLAG_NOT_COLLECTED }
@@ -95,7 +99,7 @@ function addon:UpdateTooltip(anchor)
         if qtip:IsAcquired('PetFarmHelper') and self.tooltip then
             self.tooltip:Clear()
         else
-            self.tooltip = qtip:Acquire('PetFarmHelper', 5, 'LEFT', 'LEFT', 'LEFT', 'RIGHT')
+            self.tooltip = qtip:Acquire('PetFarmHelper', 6, 'LEFT', 'LEFT', 'LEFT', 'LEFT', 'RIGHT')
         end
 
         self:UpdateTooltipData(self.tooltip)
@@ -113,7 +117,7 @@ end
 function addon:BuildTooltipData()
     local i, j
 
-    local petSpecies, playerPets = {}, {}
+    local petJournalInfo, playerPets = {}, {}
 
     local saved = self:SavePetJournalFilters()
 
@@ -126,16 +130,16 @@ function addon:BuildTooltipData()
     C_PetJournal.AddAllPetTypesFilter()
 
     for i = 1, C_PetJournal:GetNumPets() do
-        local petId, speciesId, isCollected, _, _, _, _, _, _, _, npcId, _, _, _, _, _, isUnique = C_PetJournal.GetPetInfoByIndex(i)
+        local petId, speciesId, isCollected, _, _, _, _, _, _, _, npcId, _, _, _, _, isTradeable, isUnique = C_PetJournal.GetPetInfoByIndex(i)
 
-        petSpecies[npcId] = speciesId
+        petJournalInfo[npcId] = { speciesId = speciesId, maxCount = isUnique and 1 or 3, isTradeable = isTradeable }
 
         if isCollected then
             if not playerPets[npcId] then
-                playerPets[npcId] = { petId = petId, count = 1, isUnique = isUnique }
-            else
-                playerPets[npcId].count = playerPets[npcId].count + 1
+                playerPets[npcId] = { petId = petId, count = 0 }
             end
+
+            playerPets[npcId].count = playerPets[npcId].count + 1
         end
     end
 
@@ -167,7 +171,10 @@ function addon:BuildTooltipData()
 
     local petId, petData
     for petId, petData in pairs(PFH_DB_PETS) do
-        if not playerPets[petData.npc_id] and (not petData.faction or petData.faction == playerFaction) then
+        if (not playerPets[petData.npc_id] or (not self.db.profile.hide_collected
+                and (playerPets[petData.npc_id].count < petJournalInfo[petData.npc_id].maxCount or petJournalInfo[petData.npc_id].isTradeable)))
+            and (not petData.faction or petData.faction == playerFaction)
+        then
             local petName, petLink = GetItemInfo(petId)
 
             local petSource
@@ -226,9 +233,15 @@ function addon:BuildTooltipData()
                             npcData.sort = min(zoneData.sort, petSource.for_sort)
 
                             if playerPets[petData.npc_id] then
-                                table.insert(npcData.items, { link = petLink, petId = playerPets[petData.npc_id].petId, comment = comment })
+                                table.insert(npcData.items, {
+                                    link = petLink, petId = playerPets[petData.npc_id].petId, comment = comment,
+                                    count = playerPets[petData.npc_id].count, maxCount = petJournalInfo[petData.npc_id].maxCount,
+                                })
                             else
-                                table.insert(npcData.items, { link = petLink, speciesId = petSpecies[petData.npc_id], comment = comment })
+                                table.insert(npcData.items, {
+                                    link = petLink, speciesId = petJournalInfo[petData.npc_id].speciesId, comment = comment,
+                                    count = 0, maxCount = petJournalInfo[petData.npc_id].maxCount,
+                                })
                             end
                         end
                     end
@@ -252,7 +265,7 @@ function addon:UpdateTooltipData(tooltip)
     tooltip:SetCell(lineNo, 1, string.format('%s: |c%s%s|r', L.title_mode,
         COLOR_MODE_TEXT,
         self.db.profile.hide_collected and L.mode_collector or L.mode_trader
-    ), nil, nil, 4)
+    ), nil, nil, 5)
 
     tooltip:SetLineScript(lineNo, 'OnMouseUp', function()
         self.db.profile.hide_collected = not self.db.profile.hide_collected
@@ -265,7 +278,7 @@ function addon:UpdateTooltipData(tooltip)
 
             if self.db.profile['hide_' .. petTable.title] then
                 lineNo = tooltip:AddLine()
-                tooltip:SetCell(lineNo, 1, '|TInterface\\Buttons\\UI-PlusButton-Up:16|t' .. L['title_' .. petTable.title], nil, nil, 4)
+                tooltip:SetCell(lineNo, 1, '|TInterface\\Buttons\\UI-PlusButton-Up:16|t' .. L['title_' .. petTable.title], nil, nil, 5)
 
                 tooltip:SetLineScript(lineNo, 'OnMouseUp', function()
                     self.db.profile['hide_' .. petTable.title] = false
@@ -273,7 +286,7 @@ function addon:UpdateTooltipData(tooltip)
                 end)
             else
                 lineNo = tooltip:AddLine()
-                tooltip:SetCell(lineNo, 1, '|TInterface\\Buttons\\UI-MinusButton-Up:16|t' .. L['title_' .. petTable.title], nil, nil, 4)
+                tooltip:SetCell(lineNo, 1, '|TInterface\\Buttons\\UI-MinusButton-Up:16|t' .. L['title_' .. petTable.title], nil, nil, 5)
 
                 tooltip:SetLineScript(lineNo, 'OnMouseUp', function()
                     self.db.profile['hide_' .. petTable.title] = true
@@ -309,13 +322,13 @@ function addon:UpdateTooltipData(tooltip)
                         if tableLength(firstData.items) == 1 then
                             lineNo = tooltip:AddLine()
 
-                            tooltip:SetCell(lineNo, 1, string.format('%s / %s', firstName, secondName), nil, nil, 4)
+                            tooltip:SetCell(lineNo, 1, string.format('%s / %s', firstName, secondName), nil, nil, 5)
                             tooltip:SetCellTextColor(lineNo, 1, unpack(COLOR_DUNGEON))
                         else
                             if not titlePrinted then
                                 lineNo = tooltip:AddLine()
 
-                                tooltip:SetCell(lineNo, 1, firstName, nil, nil, 4)
+                                tooltip:SetCell(lineNo, 1, firstName, nil, nil, 5)
                                 tooltip:SetCellTextColor(lineNo, 1, unpack(COLOR_DUNGEON))
 
                                 titlePrinted = 1
@@ -323,7 +336,7 @@ function addon:UpdateTooltipData(tooltip)
 
                             lineNo = tooltip:AddLine()
 
-                            tooltip:SetCell(lineNo, 2, secondName, nil, nil, 3)
+                            tooltip:SetCell(lineNo, 2, secondName, nil, nil, 4)
                             tooltip:SetCellTextColor(lineNo, 2, unpack(COLOR_DUNGEON))
                         end
 
@@ -331,13 +344,23 @@ function addon:UpdateTooltipData(tooltip)
                         for _, petData in pairs(secondData.items) do
                             lineNo = tooltip:AddLine()
 
-                            if petData.comment then
-                                tooltip:SetCell(lineNo, 3, petData.link:gsub('%[', ''):gsub('%]', ''))
+                            tooltip:SetCell(lineNo, 3, string.format('%d/%d', petData.count, petData.maxCount))
 
-                                tooltip:SetCell(lineNo, 4, petData.comment)
+                            if petData.count == 0 then
+                                tooltip:SetCellTextColor(lineNo, 3, unpack(COLOR_COUNT_NONE))
+                            elseif petData.count < petData.maxCount then
+                                tooltip:SetCellTextColor(lineNo, 3, unpack(COLOR_COUNT_NORMAL))
+                            else
+                                tooltip:SetCellTextColor(lineNo, 3, unpack(COLOR_COUNT_MAX))
+                            end
+
+                            if petData.comment then
+                                tooltip:SetCell(lineNo, 4, petData.link:gsub('%[', ''):gsub('%]', ''))
+
+                                tooltip:SetCell(lineNo, 5, petData.comment)
                                 tooltip:SetCellTextColor(lineNo, 4, unpack(COLOR_COMMENT))
                             else
-                                tooltip:SetCell(lineNo, 3, petData.link:gsub('%[', ''):gsub('%]', ''), nil, nil, 2)
+                                tooltip:SetCell(lineNo, 4, petData.link:gsub('%[', ''):gsub('%]', ''), nil, nil, 2)
                             end
 
                             if petData.petId then

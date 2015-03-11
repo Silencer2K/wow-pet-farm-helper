@@ -12,6 +12,8 @@ local TOOLTIP_SEPARATOR = { 1, 1, 1, 1, 0.5 }
 local COLOR_DUNGEON = { 1, 1, 0, 1 }
 local COLOR_COMMENT = { 0, 1, 0, 1 }
 
+local COLOR_MODE_TEXT = 'ff00ff00'
+
 local PET_JOURNAL_FLAGS = { LE_PET_JOURNAL_FLAG_COLLECTED, LE_PET_JOURNAL_FLAG_NOT_COLLECTED }
 
 function addon:OnInitialize()
@@ -21,6 +23,7 @@ function addon:OnInitialize()
             hide_raid = false,
             hide_world = false,
             hide_quest = false,
+            hide_collected = true,
             minimap = {
                 hide = false,
             },
@@ -243,11 +246,20 @@ end
 function addon:UpdateTooltipData(tooltip)
     local lineNo, petTable
 
+    lineNo = tooltip:AddLine()
+    tooltip:SetCell(lineNo, 1, string.format('%s: |c%s%s|r', L.title_mode,
+        COLOR_MODE_TEXT,
+        self.db.profile.hide_collected and L.mode_collector or L.mode_trader
+    ), nil, nil, 4)
+
+    tooltip:SetLineScript(lineNo, 'OnMouseUp', function()
+        self.db.profile.hide_collected = not self.db.profile.hide_collected
+        self:UpdateTooltip()
+    end)
+
     for _, petTable in pairs(self:BuildTooltipData()) do
         if not tableIsEmpty(petTable.items) then
-            if lineNo then
-                tooltip:AddSeparator(unpack(TOOLTIP_SEPARATOR))
-            end
+            tooltip:AddSeparator(unpack(TOOLTIP_SEPARATOR))
 
             if self.db.profile['hide_' .. petTable.title] then
                 lineNo = tooltip:AddLine()

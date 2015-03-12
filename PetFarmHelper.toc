@@ -4,7 +4,7 @@
 ## SavedVariables: PetFarmHelperDB
 ## Version: 0.1
 
-MountFarmHelper.xml
+PetFarmHelper.xml
 
 locales\enUS.lua
 locales\ruRU.lua

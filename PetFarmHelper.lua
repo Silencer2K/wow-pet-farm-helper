@@ -55,9 +55,9 @@ function addon:OnInitialize()
     self.icon = LibStub('LibDBIcon-1.0')
     self.icon:Register(addonName, self.ldb, self.db.profile.minimap)
 
-    self:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED', function(...)
-        addon:OnCombatEvent(...)
-    end)
+    --self:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED', function(...)
+    --    addon:OnCombatEvent(...)
+    --end)
 
     if not PetJournal_OnLoad then
         UIParentLoadAddOn('Blizzard_Collections')

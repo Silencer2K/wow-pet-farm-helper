@@ -4,6 +4,7 @@ LibStub('AceAddon-3.0'):NewAddon(addon, addonName, 'AceEvent-3.0')
 
 local L = LibStub('AceLocale-3.0'):GetLocale(addonName)
 local LBB = LibStub('LibBabble-Boss-3.0'):GetUnstrictLookupTable()
+local LBZ = LibStub('LibBabble-SubZone-3.0'):GetUnstrictLookupTable()
 
 local qtip = LibStub('LibQTip-1.0')
 local S2K = LibStub('S2KTools-1.0')
@@ -217,7 +218,8 @@ function addon:BuildTooltipData()
                             npcName = self:GetNpcName(petSource.npc_id)
                         end
 
-                        local raidSave = petSource.raid_save and LBB[petSource.raid_save] or npcName
+                        local raidSaveZone = petSource.raid_save_zone and LBZ[petSource.raid_save_zone] or zoneName
+                        local raidSaveBoss = petSource.raid_save_boss and LBB[petSource.raid_save_boss] or npcName
 
                         local comment
                         if petSource.subtype and petSource.type ~= 'special' then
@@ -231,7 +233,7 @@ function addon:BuildTooltipData()
                         if petSource.type == 'dungeon' and not petSource.subtype then
                             add = 1
                         elseif petSource.type == 'dungeon' or petSource.type == 'raid' then
-                            add = not(savedRaids[zoneName] and (type(savedRaids[zoneName]) ~= 'table' or savedRaids[zoneName][raidSave]))
+                            add = not(savedRaids[raidSaveZone] and (type(savedRaids[raidSaveZone]) ~= 'table' or savedRaids[raidSaveZone][raidSaveBoss]))
                         elseif petSource.quest_id then
                             add = not IsQuestFlaggedCompleted(petSource.quest_id)
                         end

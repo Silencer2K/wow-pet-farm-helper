@@ -6,15 +6,17 @@ local L = LibStub('AceLocale-3.0'):GetLocale(addonName)
 local LBB = LibStub('LibBabble-Boss-3.0'):GetUnstrictLookupTable()
 
 local qtip = LibStub('LibQTip-1.0')
+local S2K = LibStub('S2KTools-1.0')
 
-local TOOLTIP_SEPARATOR = { 1, 1, 1, 1, 0.5 }
+local TOOLTIP_SEPARATOR     = { 1, 1, 1, 1, 0.5 }
 
-local COLOR_DUNGEON = { 1, 1, 0, 1 }
-local COLOR_COMMENT = { 0, 1, 0, 1 }
+local COLOR_DUNGEON         = { 1, 1, 0, 1 }
+local COLOR_CURRENT_ZONE    = { 0, 1, 0, 1 }
+local COLOR_COMMENT         = { 0, 1, 0, 1 }
 
-local COLOR_COUNT_NONE   = { 1, 0, 0, 1 }
-local COLOR_COUNT_MAX    = { 0, 1, 0, 1 }
-local COLOR_COUNT_NORMAL = { 1, 1, 0, 1 }
+local COLOR_COUNT_NONE      = { 1, 0, 0, 1 }
+local COLOR_COUNT_MAX       = { 0, 1, 0, 1 }
+local COLOR_COUNT_NORMAL    = { 1, 1, 0, 1 }
 
 local COLOR_MODE_TEXT = 'ff00ff00'
 
@@ -52,9 +54,15 @@ function addon:OnInitialize()
     self.icon = LibStub('LibDBIcon-1.0')
     self.icon:Register(addonName, self.ldb, self.db.profile.minimap)
 
+    self:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED', function(...)
+        addon:OnCombatEvent(...)
+    end)
+
     if not PetJournal_OnLoad then
         UIParentLoadAddOn('Blizzard_Collections')
     end
+
+    self.trackNpc = {}
 
     local petId, petData
     for petId, petData in pairs(PFH_DB_PETS) do
@@ -62,8 +70,12 @@ function addon:OnInitialize()
 
         local petSource
         for _, petSource in pairs(petData.from) do
-            if petData.npc_id then
-                self:GetNpcName(petData.npc_id)
+            if petSource.npc_id then
+                self:GetNpcName(petSource.npc_id)
+
+                if petSource.type == 'raid' or (petSource.type == 'dungeon' and petSource.subtype) then
+                    self.trackNpc[petSource.npc_id] = 1
+                end
             end
         end
     end
@@ -92,6 +104,21 @@ function addon:GetNpcName(npcId)
     end
 
     return npcName
+end
+
+function addon:OnCombatEvent(event, timeStamp, logEvent, hideCaster,
+    sourceGuid, sourceName, sourceFlags, sourceFlags2,
+    destGuid, destName, destFlags, destFlags2, ...
+)
+    if destGuid then
+        local type, id = S2K:UnitInfoFromGuid(destGuid)
+
+        if type == 'Creature' or type == 'Vehicle' then
+            if (logEvent == 'UNIT_DIED' or logEvent == 'PARTY_KILL') and self.trackNpc[id] then
+                RequestRaidInfo()
+            end
+        end
+    end
 end
 
 function addon:UpdateTooltip(anchor)
@@ -272,6 +299,8 @@ function addon:UpdateTooltipData(tooltip)
         self:UpdateTooltip()
     end)
 
+    local zoneName = GetRealZoneText()
+
     for _, petTable in pairs(self:BuildTooltipData()) do
         if not tableIsEmpty(petTable.items) then
             tooltip:AddSeparator(unpack(TOOLTIP_SEPARATOR))
@@ -300,11 +329,21 @@ function addon:UpdateTooltipData(tooltip)
                 end
 
                 table.sort(firstSorted, function(a, b)
+                    if a == zoneName then
+                        if b == zoneName then
+                            return petTable.items[a].sort < petTable.items[b].sort
+                        end
+                        return true
+                    end
+                    if b == zoneName then
+                        return false
+                    end
                     return petTable.items[a].sort < petTable.items[b].sort
                 end)
 
                 for _, firstName in pairs(firstSorted) do
                     local firstData = petTable.items[firstName]
+                    local zoneColor = firstName == zoneName and COLOR_CURRENT_ZONE or COLOR_DUNGEON
 
                     local secondSorted, secondName, titlePrinted = {}
 
@@ -323,13 +362,13 @@ function addon:UpdateTooltipData(tooltip)
                             lineNo = tooltip:AddLine()
 
                             tooltip:SetCell(lineNo, 1, string.format('%s / %s', firstName, secondName), nil, nil, 5)
-                            tooltip:SetCellTextColor(lineNo, 1, unpack(COLOR_DUNGEON))
+                            tooltip:SetCellTextColor(lineNo, 1, unpack(zoneColor))
                         else
                             if not titlePrinted then
                                 lineNo = tooltip:AddLine()
 
                                 tooltip:SetCell(lineNo, 1, firstName, nil, nil, 5)
-                                tooltip:SetCellTextColor(lineNo, 1, unpack(COLOR_DUNGEON))
+                                tooltip:SetCellTextColor(lineNo, 1, unpack(zoneColor))
 
                                 titlePrinted = 1
                             end
@@ -337,7 +376,7 @@ function addon:UpdateTooltipData(tooltip)
                             lineNo = tooltip:AddLine()
 
                             tooltip:SetCell(lineNo, 2, secondName, nil, nil, 4)
-                            tooltip:SetCellTextColor(lineNo, 2, unpack(COLOR_DUNGEON))
+                            tooltip:SetCellTextColor(lineNo, 2, unpack(zoneColor))
                         end
 
                         local petData

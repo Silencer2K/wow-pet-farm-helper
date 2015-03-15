@@ -1,6 +1,6 @@
 local addonName, addon = ...
 
-LibStub('AceAddon-3.0'):NewAddon(addon, addonName, 'AceEvent-3.0')
+LibStub('AceAddon-3.0'):NewAddon(addon, addonName, 'AceEvent-3.0', 'AceTimer-3.0')
 
 local L = LibStub('AceLocale-3.0'):GetLocale(addonName)
 local LBB = LibStub('LibBabble-Boss-3.0'):GetUnstrictLookupTable()
@@ -55,9 +55,9 @@ function addon:OnInitialize()
     self.icon = LibStub('LibDBIcon-1.0')
     self.icon:Register(addonName, self.ldb, self.db.profile.minimap)
 
-    --self:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED', function(...)
-    --    addon:OnCombatEvent(...)
-    --end)
+    self:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED', function(...)
+        addon:OnCombatEvent(...)
+    end)
 
     if not PetJournal_OnLoad then
         UIParentLoadAddOn('Blizzard_Collections')
@@ -74,7 +74,7 @@ function addon:OnInitialize()
             if petSource.npc_id then
                 self:GetNpcName(petSource.npc_id)
 
-                if petSource.type == 'raid' or (petSource.type == 'dungeon' and petSource.subtype) then
+                if petSource.type == 'raid' or (petSource.type == 'dungeon' and petSource.subtype) and not petSource.dont_autoupdate then
                     self.trackNpc[petSource.npc_id] = 1
                 end
             end
@@ -117,6 +117,10 @@ function addon:OnCombatEvent(event, timeStamp, logEvent, hideCaster,
         if type == 'Creature' or type == 'Vehicle' then
             if (logEvent == 'UNIT_DIED' or logEvent == 'PARTY_KILL') and self.trackNpc[id] then
                 RequestRaidInfo()
+
+                self:ScheduleTimer(function()
+                    RequestRaidInfo()
+                end, 5)
             end
         end
     end

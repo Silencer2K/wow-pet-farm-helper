@@ -353,13 +353,13 @@ function addon:UpdateTooltipData(tooltip)
                 end
 
                 table.sort(firstSorted, function(a, b)
-                    if a == zoneName then
-                        if b == zoneName then
+                    if petTable.items[a].isCurrent then
+                        if petTable.items[b].isCurrent then
                             return petTable.items[a].sort < petTable.items[b].sort
                         end
                         return true
                     end
-                    if b == zoneName then
+                    if petTable.items[b].isCurrent then
                         return false
                     end
                     return petTable.items[a].sort < petTable.items[b].sort

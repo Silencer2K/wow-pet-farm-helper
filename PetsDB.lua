@@ -30,6 +30,7 @@ PFH_DB_BOSSES = {
     [22898] = { name = "Supremus" },
     [22947] = { name = "Mother Shahraz" },
     [23420] = { name = "Essence of Anger"           , raid = "Reliquary of Souls" },
+    [24664] = { name = "Kael'thas Sunstrider" },
     [24882] = { name = "Brutallus" },
     [25165] = { name = "Lady Sacrolash"             , raid = "The Eredar Twins" },
     [25166] = { name = "Grand Warlock Alythess"     , raid = "The Eredar Twins" },
@@ -41,6 +42,7 @@ PFH_DB_ZONES = {
     [775] = { raid = "The Battle for Mount Hyjal" },
     [780] = { raid = "Coilfang: Serpentshrine Cavern" },
     [789] = { raid = "The Sunwell" },
+    [798] = { raid = "Magister's Terrace" },
 }
 
 PFH_DB_PETS = {
@@ -51,6 +53,16 @@ PFH_DB_PETS = {
                 type = 'dungeon', npc_id = 9736,
                 zone_id = 721,
                 level = 48, for_sort = 63,
+            },
+        },
+    },
+    [35504] = { -- Phoenix Hatchling
+        npc_id = 26119,
+        from = {
+            {
+                type = 'dungeon', npc_id = 24664,
+                zone_id = 798,
+                level = 70, for_sort = 115,
             },
         },
     },

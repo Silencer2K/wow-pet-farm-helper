@@ -96,11 +96,10 @@ function addon:GetNpcName(npcId)
     local npcName = _G[tooltip:GetName() .. 'TextLeft1']:GetText()
 
     if not npcName then
-        npcName = PFH_DB_NPC_NAMES[npcId]
-        if not npcName then
-            npcName = string.format('npc#%d', npcId)
+        if PFH_DB_BOSSES[npcId] and PFH_DB_BOSSES[npcId].name then
+            npcName = LBB[PFH_DB_BOSSES[npcId].name] or PFH_DB_BOSSES[npcId].name
         else
-            npcName = LBB[npcName] or npcName
+            npcName = string.format('npc#%d', npcId)
         end
     end
 
@@ -226,8 +225,8 @@ function addon:BuildTooltipData()
                             npcName = self:GetNpcName(petSource.npc_id)
                         end
 
-                        local raidSaveZone = petSource.raid_save_zone and LBZ[petSource.raid_save_zone] or zoneName
-                        local raidSaveBoss = petSource.raid_save_boss and LBB[petSource.raid_save_boss] or npcName
+                        local raidSaveZone = PFH_DB_ZONES[petSource.zone_id] and PFH_DB_ZONES[petSource.zone_id].raid and LBZ[PFH_DB_ZONES[petSource.zone_id].raid] or zoneName
+                        local raidSaveBoss = PFH_DB_BOSSES[petSource.npc_id] and PFH_DB_BOSSES[petSource.npc_id].raid and LBB[PFH_DB_BOSSES[petSource.npc_id].raid] or npcName
 
                         local comment
                         if petSource.subtype and petSource.type ~= 'special' then

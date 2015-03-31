@@ -62,7 +62,7 @@ PFH_DB_PETS = {
             {
                 type = 'dungeon', npc_id = 24664,
                 zone_id = 798,
-                level = 70, for_sort = 115,
+                level = 65, for_sort = 115,
             },
         },
     },

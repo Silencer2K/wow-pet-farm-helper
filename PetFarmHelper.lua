@@ -201,6 +201,7 @@ function addon:BuildTooltipData()
 
     local playerFaction = string.lower(UnitFactionGroup('player'))
     local playerLevel = UnitLevel('player')
+    local playerZoneName = GetRealZoneText()
 
     local normalPets, raidPets, worldPets, questPets = {}, {}, {}, {}
 
@@ -246,19 +247,35 @@ function addon:BuildTooltipData()
                         end
 
                         if add then
-                            local zoneData
+                            local zoneData = {
+                                items = {}, sort = petSource.for_sort,
+                                isCurrent = playerZoneName == (PFH_DB_ZONES[petSource.zone_id] and PFH_DB_ZONES[petSource.zone_id].map and LBZ[PFH_DB_ZONES[petSource.zone_id].map] or zoneName),
+                            }
+
                             if petSource.type == 'dungeon' and not petSource.subtype then
-                                zoneData = normalPets[zoneName] or { items = {}, sort = petSource.for_sort }
-                                normalPets[zoneName] = zoneData
+                                if normalPets[zoneName] then
+                                    zoneData = normalPets[zoneName]
+                                else
+                                    normalPets[zoneName] = zoneData
+                                end
                             elseif petSource.type == 'dungeon' or petSource.type == 'raid' then
-                                zoneData = raidPets[zoneName] or { items = {}, sort = petSource.for_sort }
-                                raidPets[zoneName] = zoneData
+                                if raidPets[zoneName] then
+                                    zoneData = raidPets[zoneName]
+                                else
+                                    raidPets[zoneName] = zoneData
+                                end
                             elseif petSource.type == 'world' then
-                                zoneData = worldPets[zoneName] or { items = {}, sort = petSource.for_sort }
-                                worldPets[zoneName] = zoneData
+                                if worldPets[zoneName] then
+                                    zoneData = worldPets[zoneName]
+                                else
+                                    worldPets[zoneName] = zoneData
+                                end
                             else
-                                zoneData = questPets[zoneName] or { items = {}, sort = petSource.for_sort }
-                                questPets[zoneName] = zoneData
+                                if questPets[zoneName] then
+                                    zoneData = questPets[zoneName]
+                                else
+                                    questPets[zoneName] = zoneData
+                                end
                             end
 
                             zoneData.sort = min(zoneData.sort, petSource.for_sort)
@@ -308,8 +325,6 @@ function addon:UpdateTooltipData(tooltip)
         self:UpdateTooltip()
     end)
 
-    local zoneName = GetRealZoneText()
-
     for _, petTable in pairs(self:BuildTooltipData()) do
         if not tableIsEmpty(petTable.items) then
             tooltip:AddSeparator(unpack(TOOLTIP_SEPARATOR))
@@ -352,7 +367,7 @@ function addon:UpdateTooltipData(tooltip)
 
                 for _, firstName in pairs(firstSorted) do
                     local firstData = petTable.items[firstName]
-                    local zoneColor = firstName == zoneName and COLOR_CURRENT_ZONE or COLOR_DUNGEON
+                    local zoneColor = firstData.isCurrent and COLOR_CURRENT_ZONE or COLOR_DUNGEON
 
                     local secondSorted, secondName, titlePrinted = {}
 

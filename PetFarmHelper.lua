@@ -59,7 +59,7 @@ function addon:OnInitialize()
         addon:OnCombatEvent(...)
     end)
 
-    self:RegisterChatCommand('mfh', 'OnChatCommand')
+    self:RegisterChatCommand('pfh', 'OnChatCommand')
 
     if not PetJournal_OnLoad then
         UIParentLoadAddOn('Blizzard_Collections')

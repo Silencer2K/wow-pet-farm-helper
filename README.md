@@ -3,13 +3,6 @@ Pet Farm Helper
 
 Add-on that shows which battle pets can be farmed this week.
 
-Chat commands
--------------
-
-* /pfh toggleicon - toggles minimap icon
-* /pfh showicon - shows minimap icon
-* /pfh hideicon - hides minimap icon
-
 Links
 -----
 

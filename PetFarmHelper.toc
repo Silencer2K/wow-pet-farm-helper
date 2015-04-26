@@ -21,3 +21,5 @@ locales\zhTW.lua
 
 PetsDB.lua
 PetFarmHelper.lua
+
+Config.lua

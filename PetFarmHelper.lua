@@ -86,9 +86,6 @@ function addon:OnInitialize()
 
     self:ScheduleTimer(function()
         if LibStub('AceAddon-3.0'):GetAddon('AltCraft', true) then
-            AltCraftPFHTabFrame:SetParent(AltCraftFrame)
-            AltCraftPFHTabFrame:SetPoint('TOPLEFT')
-
             AltCraftFrame:AddTab(AltCraftPFHTabFrame, 'Pet Farm Helper')
         end
     end, 0.5)

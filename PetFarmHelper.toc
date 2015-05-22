@@ -2,7 +2,11 @@
 ## Title: Pet Farm Helper
 ## Author: silencer2k@gmail.com
 ## SavedVariables: PetFarmHelperDB
-## Version: 0.1
+## Version: 2.0
+## X-Curse-Packaged-Version: 0.5
+## X-Curse-Project-Name: Pet Farm Helper (What Pet to Farm Next?)
+## X-Curse-Project-ID: pet-farm-helper
+## X-Curse-Repository-ID: wow/pet-farm-helper/mainline
 
 PetFarmHelper.xml
 
@@ -23,3 +27,6 @@ PetsDB.lua
 PetFarmHelper.lua
 
 Config.lua
+
+AltCraftFrame.xml
+AltCraftFrame.lua

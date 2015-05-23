@@ -70,10 +70,36 @@
                     <TexCoords left="0.078125" right="0.75" top="0.3125" bottom="0.6875" />
                 </Texture>
             </Layer>
+            <Layer level="ARTWORK">
+                <Texture file="Interface\ICONS\INV_Misc_Pet_02" name="$parentIcon" parentKey="Icon">
+                    <Size x="52" y="52" />
+                    <Anchors>
+                        <Anchor point="TOPLEFT" x="5" y="-4" />
+                    </Anchors>
+                </Texture>
+                <FontString name="$parentItem" inherits="GameFontNormal" justifyH="LEFT" wordwrap="false" parentKey="Item" text="Набор безопасности мгновенного волшебного святилища">
+                    <Size x="250" />
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentIcon" relativePoint="TOPRIGHT" x="5" y="-7" />
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentZone" inherits="GameFontNormalSmall" justifyH="LEFT" wordwrap="false" parentKey="Zone" text="Плато солнечного колодца">
+                    <Size x="250" />
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentItem" relativePoint="BOTTOMLEFT" x="0" y="-5" />
+                    </Anchors>
+                </FontString>
+                <FontString name="$parentSource" inherits="GameFontNormalSmall" justifyH="LEFT" wordwrap="false" parentKey="Source" text="Верховный звездочет Солариан">
+                    <Size x="250" />
+                    <Anchors>
+                        <Anchor point="TOPLEFT" relativeTo="$parentZone" relativePoint="BOTTOMLEFT" x="0" y="-3" />
+                    </Anchors>
+                </FontString>
+            </Layer>
         </Layers>
         <HighlightTexture file="Interface\FriendsFrame\UI-FriendsFrame-HighlightBar" alphaMode="ADD" setAllPoints="true" />
         <Frames>
-            <Button name="$parentDeleteButton" parentKey="DeleteButton">
+            <Button name="$parentDeleteButton" parentKey="DeleteButton" visible="false">
                 <Size x="14" y="14" />
                 <Anchors>
                     <Anchor point="BOTTOMRIGHT" x="-4" y="5" />
@@ -101,12 +127,6 @@
                 </Scripts>
             </Button>
         </Frames>
-        <NormalTexture file="Interface\ICONS\ABILITY_MOUNT_GOLDENGRYPHON" name="$parentIcon" parentKey="icon">
-            <Size x="52" y="52" />
-            <Anchors>
-                <Anchor point="TOPLEFT" x="5" y="-4" />
-            </Anchors>
-        </NormalTexture>
     </Button>
     <Frame name="AltCraftPFHTabFrame" hidden="true">
         <Size x="768" y="447" />
@@ -148,6 +168,11 @@
                         </Anchors>
                     </Slider>
                 </Frames>
+                <Scripts>
+                    <OnUpdate><![CDATA[
+                        self:OnUpdate()
+                    ]]></OnUpdate>
+                </Scripts>
             </ScrollFrame>
         </Frames>
         <Scripts>

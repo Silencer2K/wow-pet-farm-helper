@@ -177,6 +177,30 @@ function addon:UpdateTooltip(anchor)
     end
 end
 
+function addon:GetItemSourceInfo(itemSource)
+    local zoneName = GetMapNameByID(itemSource.zone_id)
+
+    local npcName
+    if itemSource.type == 'special' then
+        npcName = L['special_' .. itemSource.subtype]
+    else
+        npcName = self:GetNpcName(itemSource.npc_id)
+    end
+
+    local raidSaveZone = PFH_DB_ZONES[itemSource.zone_id] and PFH_DB_ZONES[itemSource.zone_id].raid and LBZ[PFH_DB_ZONES[itemSource.zone_id].raid] or zoneName
+    local raidSaveBoss = PFH_DB_BOSSES[itemSource.npc_id] and PFH_DB_BOSSES[itemSource.npc_id].raid and LBB[PFH_DB_BOSSES[itemSource.npc_id].raid] or npcName
+
+    local comment
+    if itemSource.subtype and itemSource.type ~= 'special' then
+        comment = L['type_' .. itemSource.subtype]
+    end
+    if itemSource.cond then
+        comment = (comment and (comment .. ' + ') or '') .. L['cond_' .. itemSource.cond]
+    end
+
+    return zoneName, npcName, comment, raidSaveZone, raidSaveBoss
+end
+
 function addon:BuildTooltipData()
     local i, j
 
@@ -249,25 +273,7 @@ function addon:BuildTooltipData()
             for _, itemSource in pairs(itemData.from) do
                 if not itemSource.faction or itemSource.faction == playerFaction then
                     if itemSource.level <= playerLevel then
-                        local zoneName = GetMapNameByID(itemSource.zone_id)
-
-                        local npcName
-                        if itemSource.type == 'special' then
-                            npcName = L['special_' .. itemSource.subtype]
-                        else
-                            npcName = self:GetNpcName(itemSource.npc_id)
-                        end
-
-                        local raidSaveZone = PFH_DB_ZONES[itemSource.zone_id] and PFH_DB_ZONES[itemSource.zone_id].raid and LBZ[PFH_DB_ZONES[itemSource.zone_id].raid] or zoneName
-                        local raidSaveBoss = PFH_DB_BOSSES[itemSource.npc_id] and PFH_DB_BOSSES[itemSource.npc_id].raid and LBB[PFH_DB_BOSSES[itemSource.npc_id].raid] or npcName
-
-                        local comment
-                        if itemSource.subtype and itemSource.type ~= 'special' then
-                            comment = L['type_' .. itemSource.subtype]
-                        end
-                        if itemSource.cond then
-                            comment = (comment and (comment .. ' + ') or '') .. L['cond_' .. itemSource.cond]
-                        end
+                        local zoneName, npcName, comment, raidSaveZone, raidSaveBoss = self:GetItemSourceInfo(itemSource)
 
                         local add
                         if itemSource.type == 'dungeon' and not itemSource.subtype then
@@ -352,22 +358,7 @@ function addon:BuildAltCraftList()
 
         local itemSource
         for _, itemSource in pairs(itemData.from) do
-            local zoneName = GetMapNameByID(itemSource.zone_id)
-
-            local npcName
-            if itemSource.type == 'special' then
-                npcName = L['special_' .. itemSource.subtype]
-            else
-                npcName = self:GetNpcName(itemSource.npc_id)
-            end
-
-            local comment
-            if itemSource.subtype and itemSource.type ~= 'special' then
-                comment = L['type_' .. itemSource.subtype]
-            end
-            if itemSource.cond then
-                comment = (comment and (comment .. ' + ') or '') .. L['cond_' .. itemSource.cond]
-            end
+            local zoneName, npcName, comment = self:GetItemSourceInfo(itemSource)
 
             if added[itemId] then
                 table.insert(added[itemId].sources, {
@@ -607,22 +598,7 @@ function addon:OnGameTooltipSetItem(tooltip)
 
             local itemSource
             for _, itemSource in pairs(PFH_DB_PETS[itemId].from) do
-                local zoneName = GetMapNameByID(itemSource.zone_id)
-
-                local npcName
-                if itemSource.type == 'special' then
-                    npcName = L['special_' .. itemSource.subtype]
-                else
-                    npcName = self:GetNpcName(itemSource.npc_id)
-                end
-
-                local comment
-                if itemSource.subtype and itemSource.type ~= 'special' then
-                    comment = L['type_' .. itemSource.subtype]
-                end
-                if itemSource.cond then
-                    comment = (comment and (comment .. ' + ') or '') .. L['cond_' .. itemSource.cond]
-                end
+                local zoneName, npcName, comment = self:GetItemSourceInfo(itemSource)
 
                 if comment then
                     tooltip:AddDoubleLine(string.format('%s / %s', zoneName, npcName), comment, unpack(COLOR_ITEM_TOOLTIP_SOURCE_2L))

@@ -21,6 +21,10 @@ local COLOR_COUNT_NORMAL    = { 1, 1, 0, 1 }
 
 local COLOR_MODE_TEXT = 'ff00ff00'
 
+local COLOR_ITEM_TOOLTIP            = { 1, 1, 1 }
+local COLOR_ITEM_TOOLTIP_SOURCE     = { 1, 1, 0 }
+local COLOR_ITEM_TOOLTIP_SOURCE_2L  = { 1, 1, 0, 0, 1, 0 }
+
 local PET_JOURNAL_FLAGS = { LE_PET_JOURNAL_FLAG_COLLECTED, LE_PET_JOURNAL_FLAG_NOT_COLLECTED }
 
 function addon:OnInitialize()
@@ -67,6 +71,14 @@ function addon:OnInitialize()
 
     self:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED', function(...)
         addon:OnCombatEvent(...)
+    end)
+
+    GameTooltip:HookScript('OnTooltipCleared', function(self)
+        addon:OnGameTooltipCleared(self)
+    end)
+
+    GameTooltip:HookScript('OnTooltipSetItem', function(self)
+        addon:OnGameTooltipSetItem(self)
     end)
 
     LibStub('AceConfig-3.0'):RegisterOptionsTable(addonName, self:GetOptions())
@@ -578,5 +590,46 @@ function addon:RestorePetJournalFilters(saved)
 
     for i = 1, C_PetJournal.GetNumPetTypes() do
         C_PetJournal.SetPetTypeFilter(i, saved.type[i])
+    end
+end
+function addon:OnGameTooltipCleared(tooltip)
+end
+
+function addon:OnGameTooltipSetItem(tooltip)
+    local link = select(2, tooltip:GetItem())
+
+    if link then
+        local itemId = 0 + (link:match('|Hitem:(%d+):') or 0)
+
+        if PFH_DB_PETS[itemId] then
+            tooltip:AddLine(' ')
+            tooltip:AddLine(string.format('%s:', L.tooltip_source), unpack(COLOR_ITEM_TOOLTIP))
+
+            local source
+            for _, source in pairs(PFH_DB_PETS[itemId].from) do
+                local zoneName = GetMapNameByID(source.zone_id)
+
+                local npcName
+                if source.type == 'special' then
+                    npcName = L['special_' .. source.subtype]
+                else
+                    npcName = self:GetNpcName(source.npc_id)
+                end
+
+                local comment
+                if source.subtype and source.type ~= 'special' then
+                    comment = L['type_' .. source.subtype]
+                end
+                if source.cond then
+                    comment = (comment and (comment .. ' + ') or '') .. L['cond_' .. source.cond]
+                end
+
+                if comment then
+                    tooltip:AddDoubleLine(string.format('%s / %s', zoneName, npcName), comment, unpack(COLOR_ITEM_TOOLTIP_SOURCE_2L))
+                else
+                    tooltip:AddLine(string.format('%s / %s', zoneName, npcName, unpack(COLOR_ITEM_TOOLTIP_SOURCE)))
+                end
+            end
+        end
     end
 end

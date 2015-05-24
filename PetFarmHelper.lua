@@ -90,17 +90,17 @@ function addon:OnInitialize()
 
     self.trackNpc = {}
 
-    local petId, petData
-    for petId, petData in pairs(PFH_DB_PETS) do
-        GetItemInfo(petId)
+    local itemId, itemData
+    for itemId, itemData in pairs(PFH_DB_PETS) do
+        GetItemInfo(itemId)
 
-        local petSource
-        for _, petSource in pairs(petData.from) do
-            if petSource.npc_id then
-                self:GetNpcName(petSource.npc_id)
+        local itemSource
+        for _, itemSource in pairs(itemData.from) do
+            if itemSource.npc_id then
+                self:GetNpcName(itemSource.npc_id)
 
-                if petSource.type == 'raid' or (petSource.type == 'dungeon' and petSource.subtype) and not petSource.dont_autoupdate then
-                    self.trackNpc[petSource.npc_id] = 1
+                if itemSource.type == 'raid' or (itemSource.type == 'dungeon' and itemSource.subtype) and not itemSource.dont_autoupdate then
+                    self.trackNpc[itemSource.npc_id] = 1
                 end
             end
         end
@@ -180,7 +180,7 @@ end
 function addon:BuildTooltipData()
     local i, j
 
-    local petJournalInfo, playerPets = {}, {}
+    local petJournalInfo, playerItems = {}, {}
 
     local saved = self:SavePetJournalFilters()
 
@@ -193,16 +193,16 @@ function addon:BuildTooltipData()
     C_PetJournal.AddAllPetTypesFilter()
 
     for i = 1, C_PetJournal:GetNumPets() do
-        local petId, speciesId, isCollected, _, _, _, _, _, _, _, npcId, _, _, _, _, isTradeable, isUnique = C_PetJournal.GetPetInfoByIndex(i)
+        local itemId, speciesId, isCollected, _, _, _, _, _, _, _, npcId, _, _, _, _, isTradeable, isUnique = C_PetJournal.GetPetInfoByIndex(i)
 
         petJournalInfo[npcId] = { speciesId = speciesId, maxCount = isUnique and 1 or 3, isTradeable = isTradeable }
 
         if isCollected then
-            if not playerPets[npcId] then
-                playerPets[npcId] = { petId = petId, count = 0 }
+            if not playerItems[npcId] then
+                playerItems[npcId] = { itemId = itemId, count = 0 }
             end
 
-            playerPets[npcId].count = playerPets[npcId].count + 1
+            playerItems[npcId].count = playerItems[npcId].count + 1
         end
     end
 
@@ -235,97 +235,97 @@ function addon:BuildTooltipData()
     local playerLevel = UnitLevel('player')
     local playerZoneName = GetRealZoneText()
 
-    local normalPets, raidPets, worldPets, questPets = {}, {}, {}, {}
+    local normalItems, raidItems, worldItems, questItems = {}, {}, {}, {}
 
-    local petId, petData
-    for petId, petData in pairs(PFH_DB_PETS) do
-        if (not playerPets[petData.npc_id] or (not self.db.profile.hide_collected
-                and (playerPets[petData.npc_id].count < petJournalInfo[petData.npc_id].maxCount or petJournalInfo[petData.npc_id].isTradeable)))
-            and (not petData.faction or petData.faction == playerFaction)
+    local itemId, itemData
+    for itemId, itemData in pairs(PFH_DB_PETS) do
+        if (not playerItems[itemData.npc_id] or (not self.db.profile.hide_collected
+                and (playerItems[itemData.npc_id].count < petJournalInfo[itemData.npc_id].maxCount or petJournalInfo[itemData.npc_id].isTradeable)))
+            and (not itemData.faction or itemData.faction == playerFaction)
         then
-            local petName, petLink = GetItemInfo(petId)
+            local itemName, itemLink = GetItemInfo(itemId)
 
-            local petSource
-            for _, petSource in pairs(petData.from) do
-                if not petSource.faction or petSource.faction == playerFaction then
-                    if petSource.level <= playerLevel then
-                        local zoneName = GetMapNameByID(petSource.zone_id)
+            local itemSource
+            for _, itemSource in pairs(itemData.from) do
+                if not itemSource.faction or itemSource.faction == playerFaction then
+                    if itemSource.level <= playerLevel then
+                        local zoneName = GetMapNameByID(itemSource.zone_id)
 
                         local npcName
-                        if petSource.type == 'special' then
-                            npcName = L['special_' .. petSource.subtype]
+                        if itemSource.type == 'special' then
+                            npcName = L['special_' .. itemSource.subtype]
                         else
-                            npcName = self:GetNpcName(petSource.npc_id)
+                            npcName = self:GetNpcName(itemSource.npc_id)
                         end
 
-                        local raidSaveZone = PFH_DB_ZONES[petSource.zone_id] and PFH_DB_ZONES[petSource.zone_id].raid and LBZ[PFH_DB_ZONES[petSource.zone_id].raid] or zoneName
-                        local raidSaveBoss = PFH_DB_BOSSES[petSource.npc_id] and PFH_DB_BOSSES[petSource.npc_id].raid and LBB[PFH_DB_BOSSES[petSource.npc_id].raid] or npcName
+                        local raidSaveZone = PFH_DB_ZONES[itemSource.zone_id] and PFH_DB_ZONES[itemSource.zone_id].raid and LBZ[PFH_DB_ZONES[itemSource.zone_id].raid] or zoneName
+                        local raidSaveBoss = PFH_DB_BOSSES[itemSource.npc_id] and PFH_DB_BOSSES[itemSource.npc_id].raid and LBB[PFH_DB_BOSSES[itemSource.npc_id].raid] or npcName
 
                         local comment
-                        if petSource.subtype and petSource.type ~= 'special' then
-                            comment = L['type_' .. petSource.subtype]
+                        if itemSource.subtype and itemSource.type ~= 'special' then
+                            comment = L['type_' .. itemSource.subtype]
                         end
-                        if petSource.cond then
-                            comment = (comment and (comment .. ' + ') or '') .. L['cond_' .. petSource.cond]
+                        if itemSource.cond then
+                            comment = (comment and (comment .. ' + ') or '') .. L['cond_' .. itemSource.cond]
                         end
 
                         local add
-                        if petSource.type == 'dungeon' and not petSource.subtype then
+                        if itemSource.type == 'dungeon' and not itemSource.subtype then
                             add = 1
-                        elseif petSource.type == 'dungeon' or petSource.type == 'raid' then
+                        elseif itemSource.type == 'dungeon' or itemSource.type == 'raid' then
                             add = not(savedRaids[raidSaveZone] and (type(savedRaids[raidSaveZone]) ~= 'table' or savedRaids[raidSaveZone][raidSaveBoss]))
-                        elseif petSource.quest_id then
-                            add = not IsQuestFlaggedCompleted(petSource.quest_id)
+                        elseif itemSource.quest_id then
+                            add = not IsQuestFlaggedCompleted(itemSource.quest_id)
                         end
 
                         if add then
                             local zoneData = {
-                                items = {}, sort = petSource.for_sort,
-                                isCurrent = playerZoneName == (PFH_DB_ZONES[petSource.zone_id] and PFH_DB_ZONES[petSource.zone_id].map and LBZ[PFH_DB_ZONES[petSource.zone_id].map] or zoneName),
+                                items = {}, sort = itemSource.for_sort,
+                                isCurrent = playerZoneName == (PFH_DB_ZONES[itemSource.zone_id] and PFH_DB_ZONES[itemSource.zone_id].map and LBZ[PFH_DB_ZONES[itemSource.zone_id].map] or zoneName),
                             }
 
-                            if petSource.type == 'dungeon' and not petSource.subtype then
-                                if normalPets[zoneName] then
-                                    zoneData = normalPets[zoneName]
+                            if itemSource.type == 'dungeon' and not itemSource.subtype then
+                                if normalItems[zoneName] then
+                                    zoneData = normalItems[zoneName]
                                 else
-                                    normalPets[zoneName] = zoneData
+                                    normalItems[zoneName] = zoneData
                                 end
-                            elseif petSource.type == 'dungeon' or petSource.type == 'raid' then
-                                if raidPets[zoneName] then
-                                    zoneData = raidPets[zoneName]
+                            elseif itemSource.type == 'dungeon' or itemSource.type == 'raid' then
+                                if raidItems[zoneName] then
+                                    zoneData = raidItems[zoneName]
                                 else
-                                    raidPets[zoneName] = zoneData
+                                    raidItems[zoneName] = zoneData
                                 end
-                            elseif petSource.type == 'world' then
-                                if worldPets[zoneName] then
-                                    zoneData = worldPets[zoneName]
+                            elseif itemSource.type == 'world' then
+                                if worldItems[zoneName] then
+                                    zoneData = worldItems[zoneName]
                                 else
-                                    worldPets[zoneName] = zoneData
+                                    worldItems[zoneName] = zoneData
                                 end
                             else
-                                if questPets[zoneName] then
-                                    zoneData = questPets[zoneName]
+                                if questItems[zoneName] then
+                                    zoneData = questItems[zoneName]
                                 else
-                                    questPets[zoneName] = zoneData
+                                    questItems[zoneName] = zoneData
                                 end
                             end
 
-                            zoneData.sort = min(zoneData.sort, petSource.for_sort)
+                            zoneData.sort = min(zoneData.sort, itemSource.for_sort)
 
-                            local npcData = zoneData.items[npcName] or { items = {}, sort = petSource.for_sort }
+                            local npcData = zoneData.items[npcName] or { items = {}, sort = itemSource.for_sort }
                             zoneData.items[npcName] = npcData
 
-                            npcData.sort = min(zoneData.sort, petSource.for_sort)
+                            npcData.sort = min(zoneData.sort, itemSource.for_sort)
 
-                            if playerPets[petData.npc_id] then
+                            if playerItems[itemData.npc_id] then
                                 table.insert(npcData.items, {
-                                    link = petLink, petId = playerPets[petData.npc_id].petId, comment = comment,
-                                    count = playerPets[petData.npc_id].count, maxCount = petJournalInfo[petData.npc_id].maxCount,
+                                    link = itemLink, itemId = playerItems[itemData.npc_id].itemId, comment = comment,
+                                    count = playerItems[itemData.npc_id].count, maxCount = petJournalInfo[itemData.npc_id].maxCount,
                                 })
                             else
                                 table.insert(npcData.items, {
-                                    link = petLink, speciesId = petJournalInfo[petData.npc_id].speciesId, comment = comment,
-                                    count = 0, maxCount = petJournalInfo[petData.npc_id].maxCount,
+                                    link = itemLink, speciesId = petJournalInfo[itemData.npc_id].speciesId, comment = comment,
+                                    count = 0, maxCount = petJournalInfo[itemData.npc_id].maxCount,
                                 })
                             end
                         end
@@ -336,37 +336,37 @@ function addon:BuildTooltipData()
     end
 
     return {
-        { items = normalPets, title = 'normal' },
-        { items = raidPets  , title = 'raid'   },
-        { items = worldPets , title = 'world'  },
-        { items = questPets , title = 'quest'  },
+        { items = normalItems, title = 'normal' },
+        { items = raidItems  , title = 'raid'   },
+        { items = worldItems , title = 'world'  },
+        { items = questItems , title = 'quest'  },
     }
 end
 
 function addon:BuildAltCraftList()
     local list, added = {}, {}
 
-    local itemId, data
-    for itemId, data in pairs(PFH_DB_PETS) do
+    local itemId, itemData
+    for itemId, itemData in pairs(PFH_DB_PETS) do
         local name, link, icon = unpackByIndex({ GetItemInfo(itemId) }, 1, 2, 10 )
 
-        local source
-        for _, source in pairs(data.from) do
-            local zoneName = GetMapNameByID(source.zone_id)
+        local itemSource
+        for _, itemSource in pairs(itemData.from) do
+            local zoneName = GetMapNameByID(itemSource.zone_id)
 
             local npcName
-            if source.type == 'special' then
-                npcName = L['special_' .. source.subtype]
+            if itemSource.type == 'special' then
+                npcName = L['special_' .. itemSource.subtype]
             else
-                npcName = self:GetNpcName(source.npc_id)
+                npcName = self:GetNpcName(itemSource.npc_id)
             end
 
             local comment
-            if source.subtype and source.type ~= 'special' then
-                comment = L['type_' .. source.subtype]
+            if itemSource.subtype and itemSource.type ~= 'special' then
+                comment = L['type_' .. itemSource.subtype]
             end
-            if source.cond then
-                comment = (comment and (comment .. ' + ') or '') .. L['cond_' .. source.cond]
+            if itemSource.cond then
+                comment = (comment and (comment .. ' + ') or '') .. L['cond_' .. itemSource.cond]
             end
 
             if added[itemId] then
@@ -374,7 +374,7 @@ function addon:BuildAltCraftList()
                     zone    = zoneName,
                     source  = npcName,
                     comment = comment,
-                    sort    = source.for_sort,
+                    sort    = itemSource.for_sort,
                 })
 
                 table.sort(added[itemId].sources, function(a, b) return a.sort < b.sort end)
@@ -386,12 +386,12 @@ function addon:BuildAltCraftList()
                     name    = name,
                     link    = link,
                     icon    = icon,
-                    sort    = source.for_sort,
+                    sort    = itemSource.for_sort,
                     sources = {{
                         zone    = zoneName,
                         source  = npcName,
                         comment = comment,
-                        sort    = source.for_sort,
+                        sort    = itemSource.for_sort,
                     }},
                 }
 
@@ -406,7 +406,7 @@ function addon:BuildAltCraftList()
 end
 
 function addon:UpdateTooltipData(tooltip)
-    local lineNo, petTable
+    local lineNo, itemTable
 
     lineNo = tooltip:AddLine()
     tooltip:SetCell(lineNo, 1, string.format('%s: |c%s%s|r', L.title_mode,
@@ -419,48 +419,48 @@ function addon:UpdateTooltipData(tooltip)
         self:UpdateTooltip()
     end)
 
-    for _, petTable in pairs(self:BuildTooltipData()) do
-        if not tableIsEmpty(petTable.items) then
+    for _, itemTable in pairs(self:BuildTooltipData()) do
+        if not tableIsEmpty(itemTable.items) then
             tooltip:AddSeparator(unpack(TOOLTIP_SEPARATOR))
 
-            if self.db.profile['hide_' .. petTable.title] then
+            if self.db.profile['hide_' .. itemTable.title] then
                 lineNo = tooltip:AddLine()
-                tooltip:SetCell(lineNo, 1, '|TInterface\\Buttons\\UI-PlusButton-Up:16|t' .. L['title_' .. petTable.title], nil, nil, 5)
+                tooltip:SetCell(lineNo, 1, '|TInterface\\Buttons\\UI-PlusButton-Up:16|t' .. L['title_' .. itemTable.title], nil, nil, 5)
 
                 tooltip:SetLineScript(lineNo, 'OnMouseUp', function()
-                    self.db.profile['hide_' .. petTable.title] = false
+                    self.db.profile['hide_' .. itemTable.title] = false
                     self:UpdateTooltip()
                 end)
             else
                 lineNo = tooltip:AddLine()
-                tooltip:SetCell(lineNo, 1, '|TInterface\\Buttons\\UI-MinusButton-Up:16|t' .. L['title_' .. petTable.title], nil, nil, 5)
+                tooltip:SetCell(lineNo, 1, '|TInterface\\Buttons\\UI-MinusButton-Up:16|t' .. L['title_' .. itemTable.title], nil, nil, 5)
 
                 tooltip:SetLineScript(lineNo, 'OnMouseUp', function()
-                    self.db.profile['hide_' .. petTable.title] = true
+                    self.db.profile['hide_' .. itemTable.title] = true
                     self:UpdateTooltip()
                 end)
 
                 local firstSorted, firstName = {}
 
-                for firstName in pairs(petTable.items) do
+                for firstName in pairs(itemTable.items) do
                     table.insert(firstSorted, firstName)
                 end
 
                 table.sort(firstSorted, function(a, b)
-                    if petTable.items[a].isCurrent then
-                        if petTable.items[b].isCurrent then
-                            return petTable.items[a].sort < petTable.items[b].sort
+                    if itemTable.items[a].isCurrent then
+                        if itemTable.items[b].isCurrent then
+                            return itemTable.items[a].sort < itemTable.items[b].sort
                         end
                         return true
                     end
-                    if petTable.items[b].isCurrent then
+                    if itemTable.items[b].isCurrent then
                         return false
                     end
-                    return petTable.items[a].sort < petTable.items[b].sort
+                    return itemTable.items[a].sort < itemTable.items[b].sort
                 end)
 
                 for _, firstName in pairs(firstSorted) do
-                    local firstData = petTable.items[firstName]
+                    local firstData = itemTable.items[firstName]
                     local zoneColor = firstData.isCurrent and COLOR_CURRENT_ZONE or COLOR_DUNGEON
 
                     local secondSorted, secondName, titlePrinted = {}
@@ -497,36 +497,36 @@ function addon:UpdateTooltipData(tooltip)
                             tooltip:SetCellTextColor(lineNo, 2, unpack(zoneColor))
                         end
 
-                        local petData
-                        for _, petData in pairs(secondData.items) do
+                        local itemData
+                        for _, itemData in pairs(secondData.items) do
                             lineNo = tooltip:AddLine()
 
-                            tooltip:SetCell(lineNo, 3, string.format('%d/%d', petData.count, petData.maxCount))
+                            tooltip:SetCell(lineNo, 3, string.format('%d/%d', itemData.count, itemData.maxCount))
 
-                            if petData.count == 0 then
+                            if itemData.count == 0 then
                                 tooltip:SetCellTextColor(lineNo, 3, unpack(COLOR_COUNT_NONE))
-                            elseif petData.count < petData.maxCount then
+                            elseif itemData.count < itemData.maxCount then
                                 tooltip:SetCellTextColor(lineNo, 3, unpack(COLOR_COUNT_NORMAL))
                             else
                                 tooltip:SetCellTextColor(lineNo, 3, unpack(COLOR_COUNT_MAX))
                             end
 
-                            if petData.comment then
-                                tooltip:SetCell(lineNo, 4, petData.link:gsub('%[', ''):gsub('%]', ''))
+                            if itemData.comment then
+                                tooltip:SetCell(lineNo, 4, itemData.link:gsub('%[', ''):gsub('%]', ''))
 
-                                tooltip:SetCell(lineNo, 5, petData.comment)
+                                tooltip:SetCell(lineNo, 5, itemData.comment)
                                 tooltip:SetCellTextColor(lineNo, 4, unpack(COLOR_COMMENT))
                             else
-                                tooltip:SetCell(lineNo, 4, petData.link:gsub('%[', ''):gsub('%]', ''), nil, nil, 2)
+                                tooltip:SetCell(lineNo, 4, itemData.link:gsub('%[', ''):gsub('%]', ''), nil, nil, 2)
                             end
 
-                            if petData.petId then
+                            if itemData.itemId then
                                 tooltip:SetLineScript(lineNo, 'OnMouseUp', function()
-                                    self:OpenPetJournal(petData.petId, 1)
+                                    self:OpenPetJournal(itemData.itemId, 1)
                                 end)
-                            elseif petData.speciesId then
+                            elseif itemData.speciesId then
                                 tooltip:SetLineScript(lineNo, 'OnMouseUp', function()
-                                    self:OpenPetJournal(petData.speciesId)
+                                    self:OpenPetJournal(itemData.speciesId)
                                 end)
                             end
                         end
@@ -605,23 +605,23 @@ function addon:OnGameTooltipSetItem(tooltip)
             tooltip:AddLine(' ')
             tooltip:AddLine(string.format('%s:', L.tooltip_source), unpack(COLOR_ITEM_TOOLTIP))
 
-            local source
-            for _, source in pairs(PFH_DB_PETS[itemId].from) do
-                local zoneName = GetMapNameByID(source.zone_id)
+            local itemSource
+            for _, itemSource in pairs(PFH_DB_PETS[itemId].from) do
+                local zoneName = GetMapNameByID(itemSource.zone_id)
 
                 local npcName
-                if source.type == 'special' then
-                    npcName = L['special_' .. source.subtype]
+                if itemSource.type == 'special' then
+                    npcName = L['special_' .. itemSource.subtype]
                 else
-                    npcName = self:GetNpcName(source.npc_id)
+                    npcName = self:GetNpcName(itemSource.npc_id)
                 end
 
                 local comment
-                if source.subtype and source.type ~= 'special' then
-                    comment = L['type_' .. source.subtype]
+                if itemSource.subtype and itemSource.type ~= 'special' then
+                    comment = L['type_' .. itemSource.subtype]
                 end
-                if source.cond then
-                    comment = (comment and (comment .. ' + ') or '') .. L['cond_' .. source.cond]
+                if itemSource.cond then
+                    comment = (comment and (comment .. ' + ') or '') .. L['cond_' .. itemSource.cond]
                 end
 
                 if comment then

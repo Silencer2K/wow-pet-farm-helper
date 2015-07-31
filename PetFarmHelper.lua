@@ -7,7 +7,6 @@ local LBB = LibStub('LibBabble-Boss-3.0'):GetUnstrictLookupTable()
 local LBZ = LibStub('LibBabble-SubZone-3.0'):GetUnstrictLookupTable()
 
 local qtip = LibStub('LibQTip-1.0')
-local S2K = LibStub('S2KTools-1.0')
 
 local TOOLTIP_SEPARATOR     = { 1, 1, 1, 1, 0.5 }
 
@@ -143,7 +142,7 @@ function addon:OnCombatEvent(event, timeStamp, logEvent, hideCaster,
     destGuid, destName, destFlags, destFlags2, ...
 )
     if destGuid then
-        local type, id = S2K:UnitInfoFromGuid(destGuid)
+        local type, id = UnitInfoFromGuid(destGuid)
 
         if type == 'Creature' or type == 'Vehicle' then
             if (logEvent == 'UNIT_DIED' or logEvent == 'PARTY_KILL') and self.trackNpc[id] then

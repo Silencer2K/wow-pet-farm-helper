@@ -362,7 +362,8 @@ function addon:BuildAltCraftList()
 
     local itemId, itemData
     for itemId, itemData in pairs(PFH_DB_PETS) do
-        if (playerItems[itemData.npc_id].count < petJournalInfo[itemData.npc_id].maxCount or petJournalInfo[itemData.npc_id].isTradeable)
+        if (not playerItems[itemData.npc_id]
+            or (playerItems[itemData.npc_id].count < petJournalInfo[itemData.npc_id].maxCount or petJournalInfo[itemData.npc_id].isTradeable))
             and (not itemData.faction or itemData.faction == playerFaction)
         then
             local name, link, icon = table.select({ GetItemInfo(itemId) }, 1, 2, 10 )

@@ -397,7 +397,7 @@ function addon:BuildAltCraftList()
                                 comment     = comment,
                                 sort        = itemSource.for_sort,
                             }},
-                            count       = playerItems[itemData.npc_id].count,
+                            count       = playerItems[itemData.npc_id] and playerItems[itemData.npc_id].count or 0,
                             maxCount    = petJournalInfo[itemData.npc_id].maxCount,
                         }
 

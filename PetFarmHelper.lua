@@ -200,10 +200,8 @@ function addon:GetItemSourceInfo(itemSource)
     return zoneName, npcName, comment, raidSaveZone, raidSaveBoss
 end
 
-function addon:BuildTooltipData()
-    local i, j
-
-    local petJournalInfo, playerItems = {}, {}
+function addon:GetPlayerItems()
+    local playerItems, petJournalInfo = {}, {}
 
     local saved = self:SavePetJournalFilters()
 
@@ -230,6 +228,14 @@ function addon:BuildTooltipData()
     end
 
     self:RestorePetJournalFilters(saved)
+
+    return playerItems, petJournalInfo
+end
+
+function addon:BuildTooltipData()
+    local i, j
+
+    local playerItems, petJournalInfo = self:GetPlayerItems()
 
     local savedRaids = {}
     for i = 1, GetNumSavedInstances() do
@@ -351,41 +357,52 @@ end
 function addon:BuildAltCraftList()
     local list, added = {}, {}
 
+    local playerItems, petJournalInfo = self:GetPlayerItems()
+    local playerFaction = string.lower(UnitFactionGroup('player'))
+
     local itemId, itemData
     for itemId, itemData in pairs(PFH_DB_PETS) do
-        local name, link, icon = table.select({ GetItemInfo(itemId) }, 1, 2, 10 )
+        if (playerItems[itemData.npc_id].count < petJournalInfo[itemData.npc_id].maxCount or petJournalInfo[itemData.npc_id].isTradeable)
+            and (not itemData.faction or itemData.faction == playerFaction)
+        then
+            local name, link, icon = table.select({ GetItemInfo(itemId) }, 1, 2, 10 )
 
-        local itemSource
-        for _, itemSource in pairs(itemData.from) do
-            local zoneName, npcName, comment = self:GetItemSourceInfo(itemSource)
+            local itemSource
+            for _, itemSource in pairs(itemData.from) do
+                if not itemSource.faction or itemSource.faction == playerFaction then
+                    local zoneName, npcName, comment = self:GetItemSourceInfo(itemSource)
 
-            if added[itemId] then
-                table.insert(added[itemId].sources, {
-                    zone    = zoneName,
-                    source  = npcName,
-                    comment = comment,
-                    sort    = itemSource.for_sort,
-                })
+                    if added[itemId] then
+                        table.insert(added[itemId].sources, {
+                            zone    = zoneName,
+                            source  = npcName,
+                            comment = comment,
+                            sort    = itemSource.for_sort,
+                        })
 
-                table.sort(added[itemId].sources, function(a, b) return a.sort < b.sort end)
+                        table.sort(added[itemId].sources, function(a, b) return a.sort < b.sort end)
 
-                added[itemId].sort = added[itemId].sources[1].sort
-            else
-                added[itemId] = {
-                    itemId  = itemId,
-                    name    = name,
-                    link    = link,
-                    icon    = icon,
-                    sort    = itemSource.for_sort,
-                    sources = {{
-                        zone    = zoneName,
-                        source  = npcName,
-                        comment = comment,
-                        sort    = itemSource.for_sort,
-                    }},
-                }
+                        added[itemId].sort = added[itemId].sources[1].sort
+                    else
+                        added[itemId] = {
+                            itemId      = itemId,
+                            name        = name,
+                            link        = link,
+                            icon        = icon,
+                            sort        = itemSource.for_sort,
+                            sources     = {{
+                                zone        = zoneName,
+                                source      = npcName,
+                                comment     = comment,
+                                sort        = itemSource.for_sort,
+                            }},
+                            count       = playerItems[itemData.npc_id].count,
+                            maxCount    = petJournalInfo[itemData.npc_id].maxCount,
+                        }
 
-                table.insert(list, added[itemId])
+                        table.insert(list, added[itemId])
+                    end
+                end
             end
         end
     end

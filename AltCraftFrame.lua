@@ -4,6 +4,10 @@ local L = LibStub('AceLocale-3.0'):GetLocale(addonName)
 
 local LIST_SCROLL_ITEM_HEIGHT = 60
 
+local COLOR_COUNT_NONE_TEXT     = 'ffff0000'
+local COLOR_COUNT_MAX_TEXT      = 'ff00ff00'
+local COLOR_COUNT_NORMAL_TEXT   = 'ffffff00'
+
 local frame = AltCraftPFHTabFrame
 
 function frame:OnInitialize()
@@ -99,7 +103,9 @@ function frame.ListScroll:Update()
             button:Show()
 
             button.Icon.Texture:SetTexture(item.icon)
-            button.Item:SetText(item.link:gsub('[%[%]]', ''))
+
+            local color = item.count == 0 and COLOR_COUNT_NONE_TEXT or (item.count == item.maxCount and COLOR_COUNT_MAX_TEXT or COLOR_COUNT_NORMAL_TEXT)
+            button.Item:SetText(string.format('|c%s%d/%d|r %s', color, item.count, item.maxCount, item.link:gsub('[%[%]]', '')))
 
             if item.sources[1].comment then
                 button.Zone:SetText(string.format('%s (%s)', item.sources[1].zone, item.sources[1].comment))

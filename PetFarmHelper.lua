@@ -366,7 +366,7 @@ function addon:BuildAltCraftList()
             or (playerItems[itemData.npc_id].count < petJournalInfo[itemData.npc_id].maxCount or petJournalInfo[itemData.npc_id].isTradeable))
             and (not itemData.faction or itemData.faction == playerFaction)
         then
-            local name, link, icon = table.select({ GetItemInfo(itemId) }, 1, 2, 10 )
+            local name, link, icon = table.s2k_select({ GetItemInfo(itemId) }, 1, 2, 10 )
 
             local itemSource
             for _, itemSource in pairs(itemData.from) do
@@ -428,7 +428,7 @@ function addon:UpdateTooltipData(tooltip)
     end)
 
     for _, itemTable in pairs(self:BuildTooltipData()) do
-        if not table.is_empty(itemTable.items) then
+        if not table.s2k_is_empty(itemTable.items) then
             tooltip:AddSeparator(unpack(TOOLTIP_SEPARATOR))
 
             if self.db.profile['hide_' .. itemTable.title] then
@@ -484,7 +484,7 @@ function addon:UpdateTooltipData(tooltip)
                     for _, secondName in pairs(secondSorted) do
                         local secondData = firstData.items[secondName]
 
-                        if table.len(firstData.items) == 1 then
+                        if table.s2k_len(firstData.items) == 1 then
                             lineNo = tooltip:AddLine()
 
                             tooltip:SetCell(lineNo, 1, string.format('%s / %s', firstName, secondName), nil, nil, 5)
@@ -569,7 +569,7 @@ function addon:SavePetJournalFilters()
     saved.text = C_PetJournal.GetSearchFilter()
 
     local i
-    for i in table.values(PET_JOURNAL_FLAGS) do
+    for i in table.s2k_values(PET_JOURNAL_FLAGS) do
         saved.flag[i] = not C_PetJournal.IsFlagFiltered(i)
     end
 
@@ -588,7 +588,7 @@ function addon:RestorePetJournalFilters(saved)
     C_PetJournal.SetSearchFilter(saved.text)
 
     local i
-    for i in table.values(PET_JOURNAL_FLAGS) do
+    for i in table.s2k_values(PET_JOURNAL_FLAGS) do
         C_PetJournal.SetFlagFilter(i, saved.flag[i])
     end
 

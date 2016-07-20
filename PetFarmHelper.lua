@@ -24,7 +24,7 @@ local COLOR_ITEM_TOOLTIP            = { 1, 1, 1 }
 local COLOR_ITEM_TOOLTIP_SOURCE     = { 1, 1, 0 }
 local COLOR_ITEM_TOOLTIP_SOURCE_2L  = { 1, 1, 0, 0, 1, 0 }
 
-local PET_JOURNAL_FLAGS = { LE_PET_JOURNAL_FLAG_COLLECTED, LE_PET_JOURNAL_FLAG_NOT_COLLECTED }
+local PET_JOURNAL_FLAGS = { LE_PET_JOURNAL_FILTER_COLLECTED, LE_PET_JOURNAL_FILTER_NOT_COLLECTED }
 
 function addon:OnInitialize()
     self.db = LibStub('AceDB-3.0'):New(addonName .. 'DB', {
@@ -207,11 +207,11 @@ function addon:GetPlayerItems()
 
     C_PetJournal.ClearSearchFilter()
 
-    C_PetJournal.SetFlagFilter(LE_PET_JOURNAL_FLAG_COLLECTED, true)
-    C_PetJournal.SetFlagFilter(LE_PET_JOURNAL_FLAG_NOT_COLLECTED, true)
+    C_PetJournal.SetFilterChecked(LE_PET_JOURNAL_FILTER_COLLECTED, true)
+    C_PetJournal.SetFilterChecked(LE_PET_JOURNAL_FILTER_NOT_COLLECTED, true)
 
-    C_PetJournal.AddAllPetSourcesFilter()
-    C_PetJournal.AddAllPetTypesFilter()
+    C_PetJournal.SetAllPetSourcesChecked(true)
+    C_PetJournal.SetAllPetTypesChecked(true)
 
     for i = 1, C_PetJournal:GetNumPets() do
         local itemId, speciesId, isCollected, _, _, _, _, _, _, _, npcId, _, _, _, _, isTradeable, isUnique = C_PetJournal.GetPetInfoByIndex(i)
@@ -570,15 +570,15 @@ function addon:SavePetJournalFilters()
 
     local i
     for i in table.s2k_values(PET_JOURNAL_FLAGS) do
-        saved.flag[i] = not C_PetJournal.IsFlagFiltered(i)
+        saved.flag[i] = C_PetJournal.IsFilterChecked(i)
     end
 
     for i = 1, C_PetJournal.GetNumPetSources() do
-        saved.source[i] = not C_PetJournal.IsPetSourceFiltered(i)
+        saved.source[i] = C_PetJournal.IsPetSourceChecked(i)
     end
 
     for i = 1, C_PetJournal.GetNumPetTypes() do
-        saved.type[i] = not C_PetJournal.IsPetTypeFiltered(i)
+        saved.type[i] = C_PetJournal.IsPetTypeChecked(i)
     end
 
     return saved
@@ -589,17 +589,18 @@ function addon:RestorePetJournalFilters(saved)
 
     local i
     for i in table.s2k_values(PET_JOURNAL_FLAGS) do
-        C_PetJournal.SetFlagFilter(i, saved.flag[i])
+        C_PetJournal.SetFilterChecked(i, saved.flag[i])
     end
 
     for i = 1, C_PetJournal.GetNumPetSources() do
-        C_PetJournal.SetPetSourceFilter(i, saved.source[i])
+        C_PetJournal.SetPetSourceChecked(i, saved.source[i])
     end
 
     for i = 1, C_PetJournal.GetNumPetTypes() do
         C_PetJournal.SetPetTypeFilter(i, saved.type[i])
     end
 end
+
 function addon:OnGameTooltipCleared(tooltip)
 end
 

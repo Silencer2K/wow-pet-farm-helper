@@ -279,6 +279,7 @@ function addon:BuildTooltipData()
             and (not itemData.faction or itemData.faction == playerFaction)
         then
             local itemName, itemLink = GetItemInfo(itemId)
+            local dispName = (itemLink and itemLink:gsub('%[', ''):gsub('%]', ''):sub(1)) or itemName or string.format('item#%d', itemId)
 
             local itemSource
             for _, itemSource in pairs(itemData.from) do
@@ -336,12 +337,12 @@ function addon:BuildTooltipData()
 
                             if playerItems[itemData.npc_id] then
                                 table.insert(npcData.items, {
-                                    link = itemLink, itemId = playerItems[itemData.npc_id].itemId, comment = comment,
+                                    name = dispName, itemId = playerItems[itemData.npc_id].itemId, comment = comment,
                                     count = playerItems[itemData.npc_id].count, maxCount = petJournalInfo[itemData.npc_id].maxCount,
                                 })
                             else
                                 table.insert(npcData.items, {
-                                    link = itemLink, speciesId = petJournalInfo[itemData.npc_id].speciesId, comment = comment,
+                                    name = dispName, speciesId = petJournalInfo[itemData.npc_id].speciesId, comment = comment,
                                     count = 0, maxCount = petJournalInfo[itemData.npc_id].maxCount,
                                 })
                             end
@@ -526,12 +527,12 @@ function addon:UpdateTooltipData(tooltip)
                             end
 
                             if itemData.comment then
-                                tooltip:SetCell(lineNo, 4, itemData.link:gsub('%[', ''):gsub('%]', ''))
+                                tooltip:SetCell(lineNo, 4, string.format("%-40s", itemData.name))
 
                                 tooltip:SetCell(lineNo, 5, itemData.comment)
-                                tooltip:SetCellTextColor(lineNo, 4, unpack(COLOR_COMMENT))
+                                tooltip:SetCellTextColor(lineNo, 5, unpack(COLOR_COMMENT))
                             else
-                                tooltip:SetCell(lineNo, 4, itemData.link:gsub('%[', ''):gsub('%]', ''), nil, nil, 2)
+                                tooltip:SetCell(lineNo, 4, string.format("%-40s", itemData.name), nil, nil, 2)
                             end
 
                             if itemData.itemId then

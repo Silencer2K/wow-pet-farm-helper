@@ -421,4 +421,179 @@ PFH_DB_PETS = {
             },
         },
     },
+    [142094] = { -- Fragment of Frozen Bone
+        npc_id = 115146,
+        from = {
+            {
+                type = 'raid', npc_id = 36612,
+                zone_id = 604,
+                level = 80, for_sort = 251,
+            },
+        },
+    },
+    [142095] = { -- Remains of a Blood Beast
+        npc_id = 115147,
+        from = {
+            {
+                type = 'raid', npc_id = 37813,
+                zone_id = 604,
+                level = 80, for_sort = 251,
+            },
+        },
+    },
+    [142096] = { -- Putricide's Alchemy Supplies
+        npc_id = 115148,
+        from = {
+            {
+                type = 'raid', npc_id = 36678,
+                zone_id = 604,
+                level = 80, for_sort = 251,
+            },
+        },
+    },
+    [142097] = { -- Skull of a Frozen Whelp
+        npc_id = 115149,
+        from = {
+            {
+                type = 'raid', npc_id = 36853,
+                zone_id = 604,
+                level = 80, for_sort = 251,
+            },
+        },
+    },
+    [142098] = { -- Drudge Remains
+        npc_id = 115150,
+        from = {
+            {
+                type = 'raid', npc_id = 36597,
+                zone_id = 604,
+                level = 80, for_sort = 258,
+            },
+        },
+    },
+    [142099] = { -- Call of the Frozen Blade
+        npc_id = 115152,
+        from = {
+            {
+                type = 'raid', npc_id = 36597,
+                zone_id = 604,
+                level = 80, for_sort = 258,
+            },
+        },
+    },
+    [142085] = { -- Nerubian Relic
+        npc_id = 115137,
+        from = {
+            {
+                type = 'raid', npc_id = 34564,
+                zone_id = 543,
+                level = 80, for_sort = 232,
+            },
+        },
+    },
+    [142083] = { -- Giant Worm Egg
+        npc_id = 115135,
+        from = {
+            {
+                type = 'raid', npc_id = 35144,
+                zone_id = 543,
+                level = 80, for_sort = 232,
+            },
+            {
+                type = 'raid', npc_id = 34799,
+                zone_id = 602,
+                level = 80, for_sort = 232,
+            },
+        },
+    },
+    [142086] = { -- Red-Hot Coal
+        npc_id = 115138,
+        from = {
+            {
+                type = 'raid', npc_id = 33118,
+                zone_id = 529,
+                level = 80, for_sort = 219,
+            },
+        },
+    },
+    [142087] = { -- Ironbound Collar
+        npc_id = 115139,
+        from = {
+            {
+                type = 'raid', npc_id = 33186,
+                zone_id = 529,
+                level = 80, for_sort = 219,
+            },
+        },
+    },
+    [142088] = { -- Stormforged Rune
+        npc_id = 115140,
+        from = {
+            {
+                type = 'raid', npc_id = 32857,
+                zone_id = 529,
+                level = 80, for_sort = 219,
+            },
+            {
+                type = 'raid', npc_id = 32867,
+                zone_id = 529,
+                level = 80, for_sort = 219,
+            },
+            {
+                type = 'raid', npc_id = 32927,
+                zone_id = 529,
+                level = 80, for_sort = 219,
+            },
+        },
+    },
+    [142089] = { -- Glittering Ball of Yarn
+        npc_id = 115141,
+        from = {
+            {
+                type = 'raid', npc_id = 33515,
+                zone_id = 529,
+                level = 80, for_sort = 219,
+            },
+        },
+    },
+    [142090] = { -- Ominous Pile of Snow
+        npc_id = 115142,
+        from = {
+            {
+                type = 'raid', npc_id = 32845,
+                zone_id = 529,
+                level = 80, for_sort = 219,
+            },
+        },
+    },
+    [142091] = { -- Blessed Seed
+        npc_id = 115143,
+        from = {
+            {
+                type = 'raid', npc_id = 32906,
+                zone_id = 529,
+                level = 80, for_sort = 219,
+            },
+        },
+    },
+    [142092] = { -- Overcomplicated Controller
+        npc_id = 115144,
+        from = {
+            {
+                type = 'raid', npc_id = 33350,
+                zone_id = 529,
+                level = 80, for_sort = 219,
+            },
+        },
+    },
+    [142093] = { -- Wriggling Darkness
+        npc_id = 115145,
+        from = {
+            {
+                type = 'raid', npc_id = 33288,
+                zone_id = 529,
+                level = 80, for_sort = 219,
+            },
+        },
+    },
 }

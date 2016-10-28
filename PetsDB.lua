@@ -501,7 +501,7 @@ PFH_DB_PETS = {
             },
             {
                 type = 'raid', npc_id = 34799,
-                zone_id = 602,
+                zone_id = 543,
                 level = 80, for_sort = 232,
             },
         },

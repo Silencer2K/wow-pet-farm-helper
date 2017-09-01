@@ -1,12 +1,8 @@
-## Interface: 70100
+## Interface: 70300
 ## Title: Pet Farm Helper
 ## Author: silencer2k@gmail.com
 ## SavedVariables: PetFarmHelperDB
-## Version: 7.1.0
-## X-Curse-Packaged-Version: 0.5
-## X-Curse-Project-Name: Pet Farm Helper (What Pet to Farm Next?)
-## X-Curse-Project-ID: pet-farm-helper
-## X-Curse-Repository-ID: wow/pet-farm-helper/mainline
+## Version: 7.3.0
 
 PetFarmHelper.xml
 

@@ -53,6 +53,22 @@ PFH_DB_BOSSES = {
     [36678] = { name = "Professor Putricide" },
     [36853] = { name = "Sindragosa" },
     [37813] = { name = "Deathbringer Saurfang" },
+    [42178] = { name = "Magmatron"                  , raid = "Omnitron Defense System" },
+    [41378] = { name = "Maloriak" },
+    [41376] = { name = "Nefarian" },
+    [45992] = { name = "Valiona"                    , raid = "Valiona and Theralion" },
+    [45993] = { name = "Theralion"                  , raid = "Valiona and Theralion" },
+    [43735] = { name = "Elementium Monstrosity"     , raid = "Ascendant Council" },
+    [43324] = { name = "Cho'gall" },
+    [45871] = { name = "Nezir"                      , raid = "Conclave of Wind" },
+    [46753] = { name = "Al'Akir" },
+    [53691] = { name = "Shannox" },
+    [52498] = { name = "Beth'tilac" },
+    [53494] = { name = "Baleroc" },
+    [52571] = { name = "Majordomo Staghelm" },
+    [55312] = { name = "Yor'sahj the Unsleeping" },
+    [53879] = { name = "Deathwing"                  , raid = "Spine of Deathwing" },
+    [56173] = { name = "Deathwing"                  , raid = "Madness of Deathwing" },
 }
 
 PFH_DB_ZONES = {
@@ -611,6 +627,161 @@ PFH_DB_PETS = {
                 type = 'raid', npc_id = 33288,
                 zone_id = 529,
                 level = 80, for_sort = 219,
+            },
+        },
+    },
+    [152966] = { -- Tinytron
+        npc_id = 127850,
+        from = {
+            {
+                type = 'raid', npc_id = 42178,
+                zone_id = 754,
+                level = 85, for_sort = 359,
+            },
+        },
+    },
+    [152967] = { -- Discarded Experiment
+        npc_id = 127852,
+        from = {
+            {
+                type = 'raid', npc_id = 41378,
+                zone_id = 754,
+                level = 85, for_sort = 359,
+            },
+        },
+    },
+    [152968] = { -- Rattlejaw
+        npc_id = 127853,
+        from = {
+            {
+                type = 'raid', npc_id = 41376,
+                zone_id = 754,
+                level = 85, for_sort = 359,
+            },
+        },
+    },
+    [152969] = { -- Twilight Clutch-Sister
+        npc_id = 127857,
+        from = {
+            {
+                type = 'raid', npc_id = 45992,
+                zone_id = 758,
+                level = 85, for_sort = 359,
+            },
+            {
+                type = 'raid', npc_id = 45993,
+                zone_id = 758,
+                level = 85, for_sort = 359,
+            },
+        },
+    },
+    [152970] = { -- Bound Stream
+        npc_id = 127858,
+        from = {
+            {
+                type = 'raid', npc_id = 43735,
+                zone_id = 758,
+                level = 85, for_sort = 359,
+            },
+        },
+    },
+    [152972] = { -- Faceless Minion
+        npc_id = 127859,
+        from = {
+            {
+                type = 'raid', npc_id = 43324,
+                zone_id = 758,
+                level = 85, for_sort = 359,
+            },
+        },
+    },
+    [152974] = { -- Drafty
+        npc_id = 127863,
+        from = {
+            {
+                type = 'raid', npc_id = 45871,
+                zone_id = 773,
+                level = 85, for_sort = 359,
+            },
+        },
+    },
+    [152973] = { -- Zephyrian Prince
+        npc_id = 127862,
+        from = {
+            {
+                type = 'raid', npc_id = 46753,
+                zone_id = 773,
+                level = 85, for_sort = 359,
+            },
+        },
+    },
+    [152975] = { -- Blazehound
+        npc_id = 127947,
+        from = {
+            {
+                type = 'raid', npc_id = 53691,
+                zone_id = 800,
+                level = 85, for_sort = 378,
+            },
+        },
+    },
+    [152976] = { -- Cinderweb Recluse
+        npc_id = 127948,
+        from = {
+            {
+                type = 'raid', npc_id = 52498,
+                zone_id = 800,
+                level = 85, for_sort = 378,
+            },
+        },
+    },
+    [152977] = { -- Surger
+        npc_id = 127950,
+        from = {
+            {
+                type = 'raid', npc_id = 53494,
+                zone_id = 800,
+                level = 85, for_sort = 378,
+            },
+        },
+    },
+    [152978] = { -- Infernal Pyreclaw
+        npc_id = 127951,
+        from = {
+            {
+                type = 'raid', npc_id = 52571,
+                zone_id = 800,
+                level = 85, for_sort = 378,
+            },
+        },
+    },
+    [152979] = { -- Faceless Mindlasher
+        npc_id = 127952,
+        from = {
+            {
+                type = 'raid', npc_id = 55312,
+                zone_id = 824,
+                level = 85, for_sort = 397,
+            },
+        },
+    },
+    [152980] = { -- Corrupted Blood
+        npc_id = 127953,
+        from = {
+            {
+                type = 'raid', npc_id = 53879,
+                zone_id = 824,
+                level = 85, for_sort = 403,
+            },
+        },
+    },
+    [152981] = { -- Unstable Tendril
+        npc_id = 127954,
+        from = {
+            {
+                type = 'raid', npc_id = 56173,
+                zone_id = 824,
+                level = 85, for_sort = 403,
             },
         },
     },

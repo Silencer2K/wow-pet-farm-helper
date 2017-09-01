@@ -188,7 +188,7 @@ function addon:GetItemSourceInfo(itemSource)
     end
 
     local raidSaveZone = PFH_DB_ZONES[itemSource.zone_id] and PFH_DB_ZONES[itemSource.zone_id].raid and LBZ[PFH_DB_ZONES[itemSource.zone_id].raid] or zoneName
-    local raidSaveBoss = PFH_DB_BOSSES[itemSource.npc_id] and PFH_DB_BOSSES[itemSource.npc_id].raid and LBB[PFH_DB_BOSSES[itemSource.npc_id].raid] and LBZ[PFH_DB_BOSSES[itemSource.npc_id].raid] or npcName
+    local raidSaveBoss = PFH_DB_BOSSES[itemSource.npc_id] and PFH_DB_BOSSES[itemSource.npc_id].raid and (LBB[PFH_DB_BOSSES[itemSource.npc_id].raid] or LBZ[PFH_DB_BOSSES[itemSource.npc_id].raid]) or npcName
 
     local comment
     if itemSource.subtype and itemSource.type ~= 'special' then
